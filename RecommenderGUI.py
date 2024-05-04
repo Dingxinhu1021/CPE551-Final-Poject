@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 from Recommender import Recommender
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class RecommenderGUI:
     def __init__(self):
@@ -22,6 +24,7 @@ class RecommenderGUI:
         self.setup_movie_tv_search_tab()
         self.setup_book_search_tab()
         self.setup_recommendation_tab()
+        self.setup_ratings_tab()
 
         # Buttons for loading data and quitting
         self.setup_buttons()
@@ -32,43 +35,115 @@ class RecommenderGUI:
         self.movie_tab = ttk.Frame(self.notebook)
         self.notebook.add(self.movie_tab, text='Movies')
 
-        # Text widget for displaying movies and statistics
-        self.movie_text = tk.Text(self.movie_tab, height=10, width=80)
-        self.movie_text.pack(padx=10, pady=10, fill='both', expand=True)
-        self.movie_text.insert('1.0', 'No movie data loaded yet.')
+        # Create a frame for titles and another for statistics
+        titles_frame = ttk.Frame(self.movie_tab)
+        stats_frame = ttk.Frame(self.movie_tab)
+        titles_frame.pack(fill='both', expand=True)
+        stats_frame.pack(fill='both', expand=True)
 
-        # Scrollbar
-        self.movie_scroll = ttk.Scrollbar(self.movie_tab, orient='vertical', command=self.movie_text.yview)
-        self.movie_scroll.pack(side='right', fill='y')
-        self.movie_text['yscrollcommand'] = self.movie_scroll.set
+        # Text widget for displaying movies titles and runtimes
+        self.movie_titles_text = tk.Text(titles_frame, height=10, width=80)
+        self.movie_titles_text.pack(padx=10, pady=5, fill='both', expand=True)
+        self.movie_titles_text.insert('1.0', 'No movie data loaded yet.')
+        movie_titles_scroll = ttk.Scrollbar(titles_frame, orient='vertical', command=self.movie_titles_text.yview)
+        movie_titles_scroll.pack(side='right', fill='y')
+        self.movie_titles_text['yscrollcommand'] = movie_titles_scroll.set
+
+        # Text widget for displaying movies statistics
+        self.movie_stats_text = tk.Text(stats_frame, height=10, width=80)
+        self.movie_stats_text.pack(padx=10, pady=5, fill='both', expand=True)
+        movie_stats_scroll = ttk.Scrollbar(stats_frame, orient='vertical', command=self.movie_stats_text.yview)
+        movie_stats_scroll.pack(side='right', fill='y')
+        self.movie_stats_text['yscrollcommand'] = movie_stats_scroll.set
+
 
     def setup_tv_tab(self):
         self.tv_tab = ttk.Frame(self.notebook)
         self.notebook.add(self.tv_tab, text='TV Shows')
 
-        # Text widget for displaying TV shows and statistics
-        self.tv_text = tk.Text(self.tv_tab, height=10, width=80)
-        self.tv_text.pack(padx=10, pady=10, fill='both', expand=True)
-        self.tv_text.insert('1.0', 'No TV show data loaded yet.')
+        # Create frames for titles and statistics
+        titles_frame = ttk.Frame(self.tv_tab)
+        stats_frame = ttk.Frame(self.tv_tab)
+        titles_frame.pack(fill='both', expand=True)
+        stats_frame.pack(fill='both', expand=True)
 
-        # Scrollbar
-        self.tv_scroll = ttk.Scrollbar(self.tv_tab, orient='vertical', command=self.tv_text.yview)
-        self.tv_scroll.pack(side='right', fill='y')
-        self.tv_text['yscrollcommand'] = self.tv_scroll.set
+        # Text widget for displaying TV show titles and seasons
+        self.tv_titles_text = tk.Text(titles_frame, height=10, width=80)
+        self.tv_titles_text.pack(padx=10, pady=5, fill='both', expand=True)
+        self.tv_titles_text.insert('1.0', 'No TV show data loaded yet.')
+        tv_titles_scroll = ttk.Scrollbar(titles_frame, orient='vertical', command=self.tv_titles_text.yview)
+        tv_titles_scroll.pack(side='right', fill='y')
+        self.tv_titles_text['yscrollcommand'] = tv_titles_scroll.set
+    
+        # Text widget for displaying TV show statistics
+        self.tv_stats_text = tk.Text(stats_frame, height=10, width=80)
+        self.tv_stats_text.pack(padx=10, pady=5, fill='both', expand=True)
+        tv_stats_scroll = ttk.Scrollbar(stats_frame, orient='vertical', command=self.tv_stats_text.yview)
+        tv_stats_scroll.pack(side='right', fill='y')
+        self.tv_stats_text['yscrollcommand'] = tv_stats_scroll.set
 
     def setup_book_tab(self):
         self.book_tab = ttk.Frame(self.notebook)
         self.notebook.add(self.book_tab, text='Books')
 
-        # Text widget for displaying books and statistics
-        self.book_text = tk.Text(self.book_tab, height=10, width=80)
-        self.book_text.pack(padx=10, pady=10, fill='both', expand=True)
-        self.book_text.insert('1.0', 'No book data loaded yet.')
+        # Create frames for titles and statistics
+        titles_frame = ttk.Frame(self.book_tab)
+        stats_frame = ttk.Frame(self.book_tab)
+        titles_frame.pack(fill='both', expand=True)
+        stats_frame.pack(fill='both', expand=True)
 
-        # Scrollbar
-        self.book_scroll = ttk.Scrollbar(self.book_tab, orient='vertical', command=self.book_text.yview)
-        self.book_scroll.pack(side='right', fill='y')
-        self.book_text['yscrollcommand'] = self.book_scroll.set
+        # Text widget for displaying book titles and authors
+        self.book_titles_text = tk.Text(titles_frame, height=10, width=80)
+        self.book_titles_text.pack(padx=10, pady=5, fill='both', expand=True)
+        self.book_titles_text.insert('1.0', 'No book data loaded yet.')
+        book_titles_scroll = ttk.Scrollbar(titles_frame, orient='vertical', command=self.book_titles_text.yview)
+        book_titles_scroll.pack(side='right', fill='y')
+        self.book_titles_text['yscrollcommand'] = book_titles_scroll.set
+
+        # Text widget for displaying book statistics
+        self.book_stats_text = tk.Text(stats_frame, height=10, width=80)
+        self.book_stats_text.pack(padx=10, pady=5, fill='both', expand=True)
+        book_stats_scroll = ttk.Scrollbar(stats_frame, orient='vertical', command=self.book_stats_text.yview)
+        book_stats_scroll.pack(side='right', fill='y')
+        self.book_stats_text['yscrollcommand'] = book_stats_scroll.set
+
+    def display_movie_stats(self):
+        stats = self.recommender.get_movie_stats()
+        stats_text = (
+            "Movie Statistics:\n\n"
+            f"Average Duration: {stats['Average Duration']}\n"
+            "Ratings Distribution:\n" + "\n".join(f"{k}: {v}" for k, v in stats['Ratings Distribution'].items()) +
+            f"\nMost Common Director: {stats['Most Common Director'][0]} ({stats['Most Common Director'][1]} times)\n"
+            f"Most Common Actor: {stats['Most Common Actor'][0]} ({stats['Most Common Actor'][1]} times)\n"
+            f"Most Common Genre: {stats['Most Common Genre'][0]} ({stats['Most Common Genre'][1]} times)"
+        )
+        self.movie_stats_text.delete('1.0', tk.END)
+        self.movie_stats_text.insert('1.0', stats_text)
+
+
+    def display_tv_stats(self):
+        stats = self.recommender.get_tv_stats()
+        stats_text = (
+            "TV Show Statistics:\n\n"
+            f"Average Seasons: {stats['Average Seasons']}\n"
+            "Ratings Distribution:\n" + "\n".join(f"{k}: {v}" for k, v in stats['Ratings Distribution'].items()) +
+            f"\nMost Common Actor: {stats['Most Common Actor'][0]} ({stats['Most Common Actor'][1]} times)\n"
+            f"Most Common Genre: {stats['Most Common Genre'][0]} ({stats['Most Common Genre'][1]} times)"
+        )
+        self.tv_stats_text.delete('1.0', tk.END)
+        self.tv_stats_text.insert('1.0', stats_text)
+
+
+    def display_book_stats(self):
+        stats = self.recommender.get_book_stats()
+        stats_text = (
+            "Book Statistics:\n\n"
+            f"Average Page Count: {stats['Average Page Count']}\n"
+            f"Most Common Author: {stats['Most Common Author'][0]} ({stats['Most Common Author'][1]} times)\n"
+            f"Most Common Publisher: {stats['Most Common Publisher'][0]} ({stats['Most Common Publisher'][1]} times)"
+        )
+        self.book_stats_text.delete('1.0', tk.END)
+        self.book_stats_text.insert('1.0', stats_text)
 
     def setup_movie_tv_search_tab(self):
         self.movie_tv_search_tab = ttk.Frame(self.notebook)
@@ -170,6 +245,9 @@ class RecommenderGUI:
         self.recommendation_scroll.pack(side='right', fill='y')
         self.recommendation_results_text['yscrollcommand'] = self.recommendation_scroll.set
 
+
+        
+
     def setup_buttons(self):
         button_frame = tk.Frame(self.root)
         button_frame.pack(fill='x', expand=False)
@@ -191,23 +269,26 @@ class RecommenderGUI:
         quit_button.pack(side='right', padx=10, pady=10)
 
     def creditInfoBox(self):
-        credit_message = "Project completed by:\n- Alice\n- Bob\n- Charlie\n\nCompleted on: April 30, 2024"
+        credit_message = "Project completed by:\n- Dingxin Hu\n- Ruiyang Hu\n\nCompleted on: 2024.5.3"
         messagebox.showinfo("Project Credits", credit_message)
 
     def load_shows(self):
         self.recommender.load_shows()
         movies_text = self.recommender.get_movie_list()
         tv_text = self.recommender.get_tv_list()
-        self.movie_text.delete('1.0', tk.END)
-        self.movie_text.insert('1.0', movies_text)
-        self.tv_text.delete('1.0', tk.END)
-        self.tv_text.insert('1.0', tv_text)
+        self.movie_titles_text.delete('1.0', tk.END)
+        self.movie_titles_text.insert('1.0', movies_text)
+        self.tv_titles_text.delete('1.0', tk.END)
+        self.tv_titles_text.insert('1.0', tv_text)
+        self.display_movie_stats()
+        self.display_tv_stats()
 
     def load_books(self):
         self.recommender.load_books()
         books_text = self.recommender.get_book_list()
-        self.book_text.delete('1.0', tk.END)
-        self.book_text.insert('1.0', books_text)
+        self.book_titles_text.delete('1.0', tk.END)
+        self.book_titles_text.insert('1.0', books_text)
+        self.display_book_stats()
 
     def load_associations(self):
         self.recommender.load_associations()
@@ -248,5 +329,46 @@ class RecommenderGUI:
         self.recommendation_results_text.delete('1.0', tk.END)
         self.recommendation_results_text.insert('1.0', results)
 
+
+    def generate_pie_charts(self):
+        movie_stats = self.recommender.get_movie_stats()
+        tv_stats = self.recommender.get_tv_stats()
+
+
+        movie_ratings = {k: float(v.rstrip('%')) for k, v in movie_stats['Ratings Distribution'].items()}
+        tv_show_ratings = {k: float(v.rstrip('%')) for k, v in tv_stats['Ratings Distribution'].items()}
+
+        self.create_pie_chart(movie_ratings, self.frame_movies, "Movie Ratings")
+        self.create_pie_chart(tv_show_ratings, self.frame_tv_shows, "TV Show Ratings")
+
+
+    def setup_ratings_tab(self):
+        ratings_tab = ttk.Frame(self.notebook)
+        self.notebook.add(ratings_tab, text='Ratings')
+
+        button_frame = ttk.Frame(ratings_tab)
+        button_frame.pack(side='top', fill='x', padx=10, pady=10)
+
+        generate_button = ttk.Button(button_frame, text="Generate Charts", command=self.generate_pie_charts)
+        generate_button.pack(side='left')
+
+        self.frame_movies = tk.Frame(ratings_tab)
+        self.frame_tv_shows = tk.Frame(ratings_tab)
+        self.frame_movies.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.frame_tv_shows.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+
+    def create_pie_chart(self, data, frame, title):
+        fig, ax = plt.subplots()
+        labels = [f"{k} - {v:.2f}%" for k, v in data.items()]
+        ax.pie(data.values(), labels=labels, autopct='%1.2f%%', startangle=90)
+        ax.set_title(title)
+        ax.axis('equal')  # Ensure that pie is drawn as a circle.
+        canvas = FigureCanvasTkAgg(fig, master=frame)  # A tk.DrawingArea.
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+    
+
+# Main function to run the GUI
 if __name__ == "__main__":
     app = RecommenderGUI()

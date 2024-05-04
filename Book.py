@@ -22,6 +22,12 @@ class Book(Media):  # Subclass of Media
     def set_authors(self, authors):
         self._authors = authors
 
+    def get_avg_rating(self):
+        return self._avg_rating
+
+    def set_avg_rating(self, avg_rating):
+        self._avg_rating = avg_rating
+
     def get_isbn(self):
         return self._isbn
 

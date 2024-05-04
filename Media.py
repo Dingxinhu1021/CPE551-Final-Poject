@@ -42,4 +42,3 @@ if __name__ == "__main__":
     # Updating and printing the title
     media_example.set_title("New Example Title")
     print(f"Updated Title: {media_example.get_title()}")
-
