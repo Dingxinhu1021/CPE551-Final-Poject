@@ -110,3 +110,85 @@ class Recommender:
             'Average Duration': f"{average_duration:.2f} minutes",
             'Ratings Distribution': ratings_percentages
         }
+        def get_tv_stats(self):
+        ratings = {}
+        total_seasons = 0
+        count = 0
+        for show in self.shows.values():
+            if isinstance(show, Show) and show.get_show_type() == 'TV Show':
+                rating = show.get_rating()
+                seasons = int(show.get_duration().replace(' Seasons', '').replace(' Season', ''))
+                ratings[rating] = ratings.get(rating, 0) + 1
+                total_seasons += seasons
+                count += 1
+
+        average_seasons = total_seasons / count if count else 0
+        ratings_percentages = {k: (v / count) * 100 for k, v in ratings.items()}
+        
+        return {
+            'Average Seasons': f"{average_seasons:.2f}",
+            'Ratings Distribution': ratings_percentages
+        }
+
+    def get_book_stats(self):
+        total_pages = 0
+        count = 0
+        for book in self.books.values():
+            if isinstance(book, Book):
+                pages = int(book.get_num_pages())
+                total_pages += pages
+                count += 1
+
+        average_pages = total_pages / count if count else 0
+        
+        return {'Average Page Count': f"{average_pages:.2f}"}
+    
+
+    def search_tv_movies(self, show_type, title, director, actor, genre):
+        if show_type not in ['Movie', 'TV Show']:
+            return None, "Please select 'Movie' or 'TV Show' from Type first."
+
+        if not any([title, director, actor, genre]):
+            return None, "Please enter information for Title, Director, Actor, and/or Genre."
+
+        results = []
+        for show_id, show in self.shows.items():
+            if show['type'] == show_type and \
+               (not title or title.lower() in show['title'].lower()) and \
+               (not director or director.lower() in show.get('director', '').lower()) and \
+               (not actor or any(actor.lower() in x.lower() for x in show.get('cast', '').split(', '))) and \
+               (not genre or genre.lower() in show.get('listed_in', '').lower()):
+                results.append(f"{show['title']} - {show['director']} - {', '.join(show['cast'])} - {show['listed_in']}")
+
+        return '\n'.join(results), ""
+    
+
+    def search_books(self, title, author, publisher):
+        if not any([title, author, publisher]):
+            return None, "Please enter information for Title, Author, and/or Publisher."
+
+        results = []
+        max_title_len = max_author_len = max_publisher_len = 0
+        for book_id, book in self.books.items():
+            if (not title or title.lower() in book['title'].lower()) and \
+               (not author or author.lower() in book['authors'].lower()) and \
+               (not publisher or publisher.lower() in book['publisher'].lower()):
+                results.append(book)
+                max_title_len = max(max_title_len, len(book['title']))
+                max_author_len = max(max_author_len, len(book['authors']))
+                max_publisher_len = max(max_publisher_len, len(book['publisher']))
+
+        if not results:
+            return None, "No Results"
+
+        header = f"{'Title'.ljust(max_title_len)}  {'Author'.ljust(max_author_len)}  {'Publisher'.ljust(max_publisher_len)}\n"
+        formatted_results = [header]
+        formatted_results.extend([f"{book['title'].ljust(max_title_len)}  {book['authors'].ljust(max_author_len)}  {book['publisher'].ljust(max_publisher_len)}" for book in results])
+        
+        return '\n'.join(formatted_results), ""
+
+# Example instantiation and use of the Recommender class
+if __name__ == "__main__":
+    recommender = Recommender()
+    # These methods would be triggered by GUI actions or other parts of the program
+
