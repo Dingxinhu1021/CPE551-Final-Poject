@@ -1,3 +1,8 @@
+# Author: Dingxin Hu /Ruiyang HU
+# Date: 2024-05-04
+# Description: defines a Media class with three private attributes: ID, title, and average score.
+# It provides constructors and accessors and changers for each attribute.
+
 class Media:
     def __init__(self, media_id, title, avg_rating):
         # Initialize the private member variables
@@ -28,17 +33,3 @@ class Media:
     # Mutator (setter) for the average rating
     def set_avg_rating(self, avg_rating):
         self._avg_rating = avg_rating
-
-# Example usage
-if __name__ == "__main__":
-    # Creating an instance of Media
-    media_example = Media(101, "Example Title", 4.5)
-    
-    # Accessing and printing details
-    print(f"Media ID: {media_example.get_id()}")
-    print(f"Title: {media_example.get_title()}")
-    print(f"Average Rating: {media_example.get_avg_rating()}")
-
-    # Updating and printing the title
-    media_example.set_title("New Example Title")
-    print(f"Updated Title: {media_example.get_title()}")
