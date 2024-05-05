@@ -1,10 +1,20 @@
+# Author: Dingxin Hu /Ruiyang Hu
+# Date: 2024-05-04
+# Description:
+# The Book class is a subclass of Media, specifically designed to represent books.
+# It extends the basic attributes to include authors, two types of ISBN numbers,
+# language code, page count, number of ratings, publication date, and publisher.
+# This class takes these details through a constructor and provides corresponding accessor
+# and mutator methods to ensure data integrity and secure access.
+
+
 from Media import Media  # Import the Media base class
 
 class Book(Media):  # Subclass of Media
     def __init__(self, media_id, title, avg_rating, authors, isbn, isbn13, language_code, num_pages, ratings_count, publication_date, publisher):
         # Initialize Media's attributes
         super().__init__(media_id, title, avg_rating)
-        
+
         # Initialize Book's specific attributes
         self._authors = authors
         self._isbn = isbn
@@ -69,8 +79,3 @@ class Book(Media):  # Subclass of Media
 
     def set_publisher(self, publisher):
         self._publisher = publisher
-
-# Example usage
-if __name__ == "__main__":
-    book = Book(1, "1984", 4.1, "George Orwell", "0451524934", "9780451524935", "eng", 328, 2145984, "01/01/1961", "Signet Classics")
-    print(f"Book Title: {book.get_title()}, Author: {book.get_authors()}, ISBN: {book.get_isbn()}")
