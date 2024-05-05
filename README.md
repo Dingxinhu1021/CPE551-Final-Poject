@@ -1,2 +1,2 @@
-I love GitHub!
-I hate Github!
+CPE551 Final Project
+Team Member: Dingxin Hu, Ruiyang Hu
