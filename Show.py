@@ -1,20 +1,27 @@
+# Author: Dingxin Hu /Ruiyang Hu
+# Date: 2024-05-04
+# Description: The Show class, a subclass of Media,
+# manages details for TV shows or series.
+# It stores information like show type, directors, actors, country code, addition and release dates,
+# rating, duration, genres, and a description.
+
 from Media import Media  # Import the Media base class
 
 class Show(Media):  # Subclass of Media
-    def __init__(self, media_id, title, avg_rating, show_type, directors, actors, country_code, date_added, release_year, rating, duration, genres, description):
+    def __init__(self, show_id, type, title, director, cast, avg_rating, country, date_added, release_year, rating, duration, listed_in, description):
         # Initialize Media's attributes
-        super().__init__(media_id, title, avg_rating)
-        
+        super().__init__(show_id, title, avg_rating)
+
         # Initialize Show's specific attributes
-        self._show_type = show_type
-        self._directors = directors
-        self._actors = actors
-        self._country_code = country_code
+        self._show_type = type
+        self._directors = director
+        self._actors = cast
+        self._country_code = country
         self._date_added = date_added
         self._release_year = release_year
         self._rating = rating
         self._duration = duration
-        self._genres = genres
+        self._genres = listed_in
         self._description = description
 
     # Accessor (getter) methods for each attribute
@@ -23,7 +30,7 @@ class Show(Media):  # Subclass of Media
 
     def get_directors(self):
         return self._directors
-    
+
     def get_avg_rating(self):
         return self._avg_rating
 
@@ -50,8 +57,3 @@ class Show(Media):  # Subclass of Media
 
     def get_description(self):
         return self._description
-
-# Example usage
-if __name__ == "__main__":
-    show = Show(1, "Breaking Bad", 9.5, "TV Show", "Vince Gilligan", "Bryan Cranston, Aaron Paul", "US", "01/20/2008", 2008, "TV-MA", "5 Seasons", "Drama, Crime", "A high school chemistry teacher turned methamphetamine manufacturing drug dealer teams with a former student.")
-    print(f"Show Title: {show.get_title()}, Type: {show.get_show_type()}, Directors: {show.get_directors()}")
